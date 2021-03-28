@@ -13,14 +13,18 @@ c5_pitch = 72
 c6_pitch = 84
 keytable = "z?x?cv?b?n?m" + "a?s?df?g?h?j" + "q?w?er?t?y?u"
 
-play_state = False
+play_state = 'idle'
+
+def help():
+    print('Press "win + /" to start/stop playing, press "backspace" to exit.\n')
+
 
 def play(midi, shift, no_semi, out_range):
     global play_state
-    play_state = True
+    play_state = 'running'
     print('Start playing')
     for msg in midi:
-        if not play_state:
+        if play_state != 'running':
             break
 
         sleep(msg.time)
@@ -51,23 +55,21 @@ def play(midi, shift, no_semi, out_range):
         kbd.send(key)
 
     print('Stop playing')
-    play_state = False
+    help()
 
-def control(midi, channels, shift, no_semi, out_range):
+    play_state = 'idle'
+
+
+def control(*args):
     global play_state
-    if play_state:
-        play_state = False
-    else:
-        if not midi:
-            midi = path.join(path.dirname(path.realpath(__file__)), 'files/canon.mid')
-        midi = MidiFile(midi)
 
-        it = lambda: midi_iter(midi, channels)
-        if shift == None:
-            shift = find_best_shift(it())
-        midi
+    if play_state == 'running':
+        play_state = 'stopping'
+    elif play_state == 'idle':
+        it = args[0]
+        args = [it()] + list(args)[1:]
         kbd.call_later(
-            lambda: play(it(), shift, no_semi, out_range),
+            lambda: play(*args),
             delay=1)
 
 
@@ -80,10 +82,20 @@ if __name__ == '__main__':
     parser.add_argument('--shift-out-of-range', dest="out_range", action='store_true', help="shift notes which out of range")
     args = parser.parse_args()
 
-    print('Press "win + /" to start/stop playing, press "backspace" to exit.\n')
+    midi = args.midi
+    if not midi:
+        midi = path.join(path.dirname(path.realpath(__file__)), 'files/canon.mid')
+    midi = MidiFile(midi)
+    it = lambda: midi_iter(midi, args.channels)
+
+    shift = args.shift
+    if shift == None:
+        shift = find_best_shift(it())
 
     kbd.add_hotkey('win+/',
-        lambda: control(**vars(args)),
+        lambda: control(it, shift, args.no_semi, args.out_range),
         suppress=True,
         trigger_on_release=True)
+
+    help()
     kbd.wait('backspace', suppress=True)
