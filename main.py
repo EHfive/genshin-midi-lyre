@@ -10,7 +10,7 @@ octave_interval = 12
 c3_pitch = 48
 c4_pitch = 60
 c5_pitch = 72
-c6_pitch = 84
+b5_pitch = 83
 keytable = "z?x?cv?b?n?m" + "a?s?df?g?h?j" + "q?w?er?t?y?u"
 
 play_state = 'idle'
@@ -33,25 +33,28 @@ def play(midi, shift, no_semi, out_range):
             continue
 
         note = msg.note + shift
+        orig_note = note
 
         if note < c3_pitch:
-            print('note {} lower than c3'.format(note))
-            if shift:
+            print('note {:<3} lower than C3 : {:+}'.format(note, c3_pitch - note))
+            if out_range:
                 note = note % octave_interval + c3_pitch
-        elif note >= c6_pitch:
-            print('note {} higher than b5'.format(note))
-            if shift:
+        elif note > b5_pitch:
+            print('note {:<3} higher than B5: {:+}'.format(note, b5_pitch - note))
+            if out_range:
                 note = note % octave_interval + c5_pitch
 
         note -= c3_pitch
 
         if note < 0 or note >= 36:
+            print("{:<3} -\n".format(orig_note))
             continue
 
         if keytable[note] == '?' and not no_semi:
             note -= 1
+            orig_note -= 1
         key = keytable[note]
-        print("{:<3} {}\n".format(note, key))
+        print("{:<3} {}\n".format(orig_note, key))
         kbd.send(key)
 
     print('Stop playing')
@@ -91,6 +94,7 @@ if __name__ == '__main__':
     shift = args.shift
     if shift == None:
         shift = find_best_shift(it())
+        print('Auto calculated pitch shift: {} semitone(s)'.format(shift))
 
     kbd.add_hotkey('win+/',
         lambda: control(it, shift, args.no_semi, args.out_range),
