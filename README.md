@@ -21,7 +21,7 @@ pip install -r .\requirements.txt
 
 ```
 > python .\main.py --help
-usage: main.py [-h] [-c [CHANNELS ...]] [-o OCTAVE] [--no-semi] [--shift] [midi]
+usage: main.py [-h] [-c [CHANNELS ...]] [-s SHIFT] [--no-semi] [--shift-out-of-range] -- [midi]
 
 Play midi file on Windsong Lyre in Genshin
 
@@ -32,10 +32,10 @@ optional arguments:
   -h, --help            show this help message and exit
   -c [CHANNELS ...], --channels [CHANNELS ...]
                         enabled midi channels
-  -o OCTAVE, --octave OCTAVE
-                        shift octave
+  -s SHIFT, --shift SHIFT
+                        shift note pitch, auto calculated by default
   --no-semi             don't shift black key to white key
-  --shift               shift notes which out of range
+  --shift-out-of-range  shift notes which out of range
 ```
 
 1. Start Genshin Impact(原神)
