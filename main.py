@@ -36,11 +36,11 @@ def play(midi, channels, octave, no_semi, shift):
             note = msg.note + octave * octave_interval
 
             if note < c3_pitch:
-                print('note {} lower than c3')
+                print('note {} lower than c3'.format(note))
                 if shift:
                     note = note % octave_interval + c3_pitch
             elif note >= c6_pitch:
-                print('note {} higher than b5')
+                print('note {} higher than b5'.format(note))
                 if shift:
                     note = note % octave_interval + c5_pitch
 
