@@ -18,7 +18,7 @@ play_state = 'idle'
 
 
 def help():
-    print('Press "win + /" to start/stop playing, press "backspace" to exit.\n')
+    print('Press "\\" to start/stop playing, press "backspace" to exit.\n')
 
 
 def note_name(note):
@@ -122,7 +122,7 @@ if __name__ == '__main__':
         shift = find_best_shift(it())
         print('Auto calculated pitch shift: {} semitone(s)\n'.format(shift))
 
-    kbd.add_hotkey('win+/',
+    kbd.add_hotkey('\\',
                    lambda: control(it, shift, args.no_semi, args.out_range),
                    suppress=True,
                    trigger_on_release=True)

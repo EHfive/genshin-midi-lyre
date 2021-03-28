@@ -43,6 +43,8 @@ optional arguments:
 3. Press Z (or your custom keymap) to use Windsong Lyre
 4. Run `admin_cmd.bat` to get an administrator cmd terminal
 5. Run `python main.py [path to midi file]` in administrator terminal
+6. Switch back to Genshin Impact window, press "\\" to start/stop playing
+7. Press "backspace" to exit
 
 ## Credits
 
