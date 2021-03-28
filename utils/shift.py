@@ -5,7 +5,7 @@ keytable = "z?x?cv?b?n?m" + "a?s?df?g?h?j" + "q?w?er?t?y?u"
 
 def find_best_shift(midi_iter) -> int:
     count_list = [0] * octave_interval
-    octave_list = [0] * 10
+    octave_list = [0] * 11
     for msg in midi_iter:
         if msg.type != 'note_on':
             continue
