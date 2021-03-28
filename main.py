@@ -72,9 +72,9 @@ def control(midi, channels, shift, no_semi, out_range):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Play midi file on Windsong Lyre in Genshin')
+    parser = argparse.ArgumentParser(description='Play midi file with Windsong Lyre in Genshin Impact')
     parser.add_argument('midi', nargs="?", type=str, help='path to midi file')
-    parser.add_argument('-c', '--channels', nargs="*", type=int, help="enabled midi channels")
+    parser.add_argument('-c', '--channels', nargs="*", type=int, help="enabled midi channels, available values:0, 1, 2,...,N")
     parser.add_argument('-s', '--shift', type=int, default=None, help="shift note pitch, auto calculated by default")
     parser.add_argument('--no-semi', action='store_true', help="don't shift black key to white key")
     parser.add_argument('--shift-out-of-range', dest="out_range", action='store_true', help="shift notes which out of range")
