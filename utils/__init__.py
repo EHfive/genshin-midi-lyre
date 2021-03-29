@@ -1,3 +1,3 @@
 
 from .shift import find_best_shift
-from .midi_iter import midi_iter
+from .midi_filter import midi_play_filter

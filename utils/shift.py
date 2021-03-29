@@ -3,11 +3,11 @@ from mido import MidiFile
 octave_interval = 12
 keytable = "z?x?cv?b?n?m" + "a?s?df?g?h?j" + "q?w?er?t?y?u"
 
-def find_best_shift(midi_iter) -> int:
+def find_best_shift(midi_iter, msg_filter) -> int:
     count_list = [0] * octave_interval
     octave_list = [0] * 11
     for msg in midi_iter:
-        if msg.type != 'note_on':
+        if not msg_filter(msg):
             continue
         for i in range(octave_interval - 1):
             note_pitch = (msg.note + i) % octave_interval

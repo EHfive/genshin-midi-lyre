@@ -4,7 +4,7 @@ from time import sleep
 from mido import MidiFile
 import argparse
 import keyboard as kbd
-from utils import find_best_shift, midi_iter
+from utils import find_best_shift, midi_play_filter
 
 octave_interval = 12
 c3_pitch = 48
@@ -40,7 +40,7 @@ def print_note(ch, orig, play, key):
                     key if key else '-'))
 
 
-def play(midi, shift, no_semi, out_range):
+def play(midi, msg_filter, shift, no_semi, out_range):
     global play_state
     play_state = 'running'
     print('Start playing')
@@ -50,7 +50,7 @@ def play(midi, shift, no_semi, out_range):
 
         sleep(msg.time)
 
-        if msg.type != 'note_on':
+        if not msg_filter(msg):
             continue
 
         note = msg.note + shift
@@ -89,10 +89,9 @@ def control(*args):
     if play_state == 'running':
         play_state = 'stopping'
     elif play_state == 'idle':
-        it = args[0]
-        args = [it()] + list(args)[1:]
         kbd.call_later(
-            lambda: play(*args),
+            play,
+            args=args,
             delay=1)
 
 
@@ -115,15 +114,16 @@ if __name__ == '__main__':
         midi = path.join(path.dirname(
             path.realpath(__file__)), 'files/canon.mid')
     midi = MidiFile(midi)
-    def it(): return midi_iter(midi, args.channels)
+
+    msg_filter = lambda msg, ch=args.channels: midi_play_filter(msg, ch)
 
     shift = args.shift
     if shift == None:
-        shift = find_best_shift(it())
-        print('Auto calculated pitch shift: {} semitone(s)\n'.format(shift))
+        shift = find_best_shift(midi, msg_filter)
+        print('Auto calculated pitch shift: {:+} semitone(s)\n'.format(shift))
 
     kbd.add_hotkey('\\',
-                   lambda: control(it, shift, args.no_semi, args.out_range),
+                   lambda: control(midi, msg_filter, shift, args.no_semi, args.out_range),
                    suppress=True,
                    trigger_on_release=True)
 
