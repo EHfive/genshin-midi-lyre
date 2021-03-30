@@ -9,7 +9,7 @@ def find_best_shift(midi_iter, msg_filter) -> int:
     for msg in midi_iter:
         if not msg_filter(msg):
             continue
-        for i in range(octave_interval - 1):
+        for i in range(octave_interval):
             note_pitch = (msg.note + i) % octave_interval
             if keytable[note_pitch] != '?':
                 count_list[i] += 1
